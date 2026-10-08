@@ -9,7 +9,7 @@
     "build": "wrangler deploy --dry-run"
   },
   "dependencies": {
-    "@china-mystic/divination-core": "0.1.0",
+    "@china-mystic/divination-core": "0.3.0",
     "lunar-typescript": "1.8.6"
   },
   "devDependencies": {

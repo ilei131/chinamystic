@@ -1,15 +1,22 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "china-mystic-tma-api",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-10-01",
-  "compatibility_flags": ["nodejs_compat"],
-  "d1_databases": [
-    {"binding":"DB","database_name":"china-mystic-tma","database_id":"REPLACE_WITH_D1_DATABASE_ID","migrations_dir":"migrations"}
-  ],
-  "vars": {
-    "GEMINI_MODEL":"gemini-2.5-flash",
-    "OPENROUTER_MODEL":"openrouter/free",
-    "OPENROUTER_APP_NAME":"ChinaMystic TMA"
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "china-mystic-tma-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-10-01",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "china-mystic-tma",
+			"database_id": "c8093ad6-8697-4911-b408-4593caa28023",
+			"migrations_dir": "migrations"
+		}
+	],
+	"vars": {
+		"GEMINI_MODEL": "gemini-2.5-flash",
+		"OPENROUTER_MODEL": "openrouter/free",
+		"OPENROUTER_APP_NAME": "ChinaMystic TMA"
+	}
 }
