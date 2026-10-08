@@ -59,6 +59,7 @@ async function divine(request:Request,env:Env):Promise<Response>{
   const question=String(body?.question??'').trim();
   if(question.length<2 || question.length>1000) return json({error:'问题长度应为 2-1000 个字符'},400,origin);
   const mode=body?.mode==='mystic'?'mystic':'time';
+  const language=body?.language==='en'?'en':'zh';
   const tz=Number(body?.timezoneOffsetMinutes);
   const timezoneOffsetMinutes=Number.isFinite(tz)&&Math.abs(tz)<=840?tz:0;
   let d:any; let seedHash='';
@@ -74,10 +75,10 @@ async function divine(request:Request,env:Env):Promise<Response>{
   let interpretation:any=null;
   let provider=''; let model='';
   if(env.GEMINI_API_KEY){
-    try{const x=await callGemini(env.GEMINI_API_KEY,env.GEMINI_MODEL||'gemini-2.5-flash',question,d); interpretation=parseInterpretation(x.text);provider=x.provider;model=x.model;}catch{}
+    try{const x=await callGemini(env.GEMINI_API_KEY,env.GEMINI_MODEL||'gemini-2.5-flash',question,d,language); interpretation=parseInterpretation(x.text);provider=x.provider;model=x.model;}catch{}
   }
   if(!interpretation && env.OPENROUTER_API_KEY){
-    try{const x=await callOpenRouter(env.OPENROUTER_API_KEY,env.OPENROUTER_MODEL||'openrouter/free',question,d,env.OPENROUTER_SITE_URL,env.OPENROUTER_APP_NAME); interpretation=parseInterpretation(x.text);provider=x.provider;model=x.model;}catch{}
+    try{const x=await callOpenRouter(env.OPENROUTER_API_KEY,env.OPENROUTER_MODEL||'openrouter/free',question,d,language,env.OPENROUTER_SITE_URL,env.OPENROUTER_APP_NAME); interpretation=parseInterpretation(x.text);provider=x.provider;model=x.model;}catch{}
   }
   const id=crypto.randomUUID(); const now=new Date().toISOString();
   if(env.DB){
