@@ -1,0 +1,20 @@
+{
+  "name": "@china-mystic/worker",
+  "private": true,
+  "version": "0.3.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler deploy --dry-run"
+  },
+  "dependencies": {
+    "@china-mystic/divination-core": "0.1.0",
+    "lunar-typescript": "1.8.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "wrangler": "latest",
+    "typescript": "latest"
+  }
+}

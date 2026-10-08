@@ -1,0 +1,11 @@
+import { timeDivination, mutualHexagram, bodyUseRelation, TRIGRAMS, changedHexagram } from './src/index.ts';
+const r=timeDivination({lunarYear:2026,lunarMonth:8,lunarDay:18,yearBranchNo:7,hourBranchNo:9});
+if(!r.analysis.mutual.name || !r.analysis.opposite.name || !r.analysis.reverse.name) throw new Error('derived hexagrams missing');
+if(r.movingLine<1 || r.movingLine>6) throw new Error('moving line invalid');
+const q=mutualHexagram(6,7);
+if(q.upper<1 || q.upper>8 || q.lower<1 || q.lower>8) throw new Error('mutual invalid');
+const c=changedHexagram(1,1,1);
+if(c.index<1 || c.index>64) throw new Error('changed invalid');
+if(bodyUseRelation(TRIGRAMS[7],TRIGRAMS[6]) !== '体克用') throw new Error('body/use relation incorrect');
+if(bodyUseRelation(TRIGRAMS[6],TRIGRAMS[7]) !== '用克体') throw new Error('reverse body/use relation incorrect');
+console.log('stage3 divination core tests passed');
