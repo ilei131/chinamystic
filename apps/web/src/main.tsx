@@ -92,7 +92,10 @@ function App() {
             </div>
             <SupportPanel lang={lang} />
         </section>}
-        <footer>{T.footer}</footer>
+        <footer>
+            <div>{T.footer}</div>
+            <div className="copyright">© 2026 <a href="https://openwit.net/" target="_blank" rel="noreferrer">Openwit</a></div>
+        </footer>
     </main>
 }
 
