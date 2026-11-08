@@ -50,6 +50,7 @@ export default {
         if (url.pathname === '/health') return json({ ok: true, service: 'china-mystic-tma-api', time: new Date().toISOString() }, 200, request.headers.get('Origin'));
         if (url.pathname === '/telegram/webhook') return handleTelegram(request, env);
         if (url.pathname === '/api/divine' && request.method === 'POST') return divine(request, env);
+        if (url.pathname === '/api/report' && request.method === 'POST') return report(request, env);
         return json({ error: 'Not Found' }, 404, request.headers.get('Origin'));
     }
 };
@@ -95,4 +96,26 @@ async function divine(request: Request, env: Env): Promise<Response> {
     }
     const headers: any = { 'Set-Cookie': `cm_uid=${encodeURIComponent(cookie)}; Max-Age=31536000; Path=/; SameSite=Lax; Secure; HttpOnly` };
     return json({ id, divination: resultForClient(d), interpretation, ai: { provider: provider || null, model: model || null, available: !!interpretation } }, 200, origin, headers);
+}
+
+async function report(request: Request, env: Env): Promise<Response> {
+    const origin = request.headers.get('Origin');
+    let body: any;
+    try { body = await request.json() } catch { return json({ error: 'Invalid JSON' }, 400, origin) }
+    const appId = String(body?.appId ?? '').trim();
+    const content = String(body?.content ?? '').trim();
+    const reason = String(body?.reason ?? '').trim();
+    const appVersion = String(body?.appVersion ?? '').trim().slice(0, 64);
+    if (!appId || appId.length > 128) return json({ error: 'appId 必填且不超过 128 个字符' }, 400, origin);
+    if (!content || content.length > 5000) return json({ error: '内容必填且不超过 5000 个字符' }, 400, origin);
+    if (!reason || reason.length > 1000) return json({ error: '举报原因必填且不超过 1000 个字符' }, 400, origin);
+    if (!env.DB) return json({ error: 'Storage unavailable' }, 500, origin);
+    const id = crypto.randomUUID(); const createdAt = new Date().toISOString();
+    try {
+        await env.DB.prepare(`INSERT INTO ai_reports(id,app_id,content,reason,app_version,created_at) VALUES(?,?,?,?,?,?)`).bind(id, appId, content, reason, appVersion || null, createdAt).run();
+    } catch (e) {
+        console.error('D1 report write failed', e);
+        return json({ error: 'Failed to save report' }, 500, origin);
+    }
+    return json({ ok: true, id, createdAt }, 200, origin);
 }
